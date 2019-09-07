@@ -1,2 +1,2 @@
 # SharpPythonCompiler
-Compiler which can transform the C# code into the code which follows the Python's code convention.
+A compiler which can transform the convention of C# code to the convention of Python.
