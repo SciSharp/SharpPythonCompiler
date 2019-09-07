@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup>
+        <Version>0.0.1</Version>
+        <Authors>Kerry Jiang</Authors>
+        <RoslynVersion>3.2.1</RoslynVersion>
+    </PropertyGroup>
+</Project>
