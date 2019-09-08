@@ -44,6 +44,8 @@ namespace Test
         {
             public string Name { get; set; }
 
+            public int Count;
+
             public MyClass()
             {            
             }
