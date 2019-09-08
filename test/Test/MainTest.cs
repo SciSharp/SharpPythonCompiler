@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Rename;
 using System.IO;
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
+using SharpPythonCompiler.Core;
 
 namespace Test
 {
@@ -30,44 +31,7 @@ namespace Test
             return project.AddDocument("TestFile.cs", code);
         }
 
-        private string ConvertToPythonName(string name)
-        {
-            //MyClass => my_class
-            //_myClass => _my_class
-            //myClass => my_class
-            //_my_Class => _my_class
-
-            var output = new char[name.Length * 2];
-            var j = 0;
-
-            var prevChar = '\0';
-
-            const char UNDERSCORE = '_';
-
-            for (var i = 0; i < name.Length; i++)
-            {
-                var c = name[i];
-
-                if (char.IsUpper(c))
-                {
-                    if (i != 0 && prevChar != UNDERSCORE)
-                    {
-                        output[j++] = UNDERSCORE;
-                    }
-
-                    output[j++] = char.ToLower(c);
-                }
-                else
-                {
-                    output[j++] = c;
-                }
-
-                prevChar = c;
-            }
-
-            return new string(output, 0, j);
-        }
-
+        
         [Fact]
         public async Task TransformClassName()
         {
@@ -89,38 +53,14 @@ namespace Test
     }";
 
             var document = GetProjectDocumentForCode(code);
-            var compilation = await document.Project.GetCompilationAsync();
-            
-            var root = await document.GetSyntaxRootAsync();
-            var model = compilation.GetSemanticModel(root.SyntaxTree);
-
             var solution = document.Project.Solution;
-            
-            foreach (var oneClass in root.DescendantNodesAndSelf().OfType<ClassDeclarationSyntax>())
-            {
-                var originalSymbol = model.GetDeclaredSymbol(oneClass);                
-                var newClassName = ConvertToPythonName(originalSymbol.Name);
-                solution = await Renamer.RenameSymbolAsync(solution, originalSymbol, newClassName, solution.Workspace.Options);
-            }
 
-            var assemblies = new List<Stream>();
+            solution = await SharpTransformer.TransformSolution(solution);
 
-            foreach (var projectId in solution.ProjectIds)
-            {
-                var stream = new MemoryStream();
-                var result = (await solution.GetProject(projectId).GetCompilationAsync()).Emit(stream);
-                Assert.True(result.Success);
-                assemblies.Add(stream);
-            }
-
-            var assemblyMemory = assemblies.FirstOrDefault();
-            var assemblyData = new byte[assemblyMemory.Length];
-            assemblyMemory.Seek(0, SeekOrigin.Begin);
-            assemblyMemory.Read(assemblyData, 0, assemblyData.Length);
-            var ass = Assembly.Load(assemblyData);
+            var ass = await SharpCompiler.CompileProject(solution.Projects.FirstOrDefault());            
 
             var allTypes = ass.GetTypes();
-
+            
             Assert.NotNull(ass.GetType("Test.my_class"));
         }
     }

@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/SharpPythonCompiler.Core/SharpPythonCompiler.Core.csproj" />
     <ProjectReference Include="../TestAssembly/TestAssembly.csproj" />
   </ItemGroup>
 </Project>
