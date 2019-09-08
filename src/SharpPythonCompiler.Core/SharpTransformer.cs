@@ -44,7 +44,7 @@ namespace SharpPythonCompiler.Core
 
                 var publicMembers = classDeclaration.Members.Where(m => m.Modifiers.Any(mm => mm.Text == "public"));
                 
-                var methodCount = 0;
+                var memberCount = 0;
 
                 foreach (var member in publicMembers)
                 {
@@ -64,15 +64,26 @@ namespace SharpPythonCompiler.Core
                             }
                         }
 
-                        if (!methodDelcaration.Identifier.Text.Equals(ConvertToPythonName(methodDelcaration.Identifier.Text)) || parameterCount > 0)
+                        if (!methodDelcaration.Identifier.Text.Equals(ConvertToPythonName(methodDelcaration.Identifier.Text))
+                            || parameterCount > 0)
                         {
                             nodeFinders.Add(methodNodeFinder);
-                            methodCount++;
+                            memberCount++;
+                        }
+                    }
+                    else if (member is PropertyDeclarationSyntax propertyDeclaration)
+                    {
+                        if (!propertyDeclaration.Identifier.Text.Equals(ConvertToPythonName(propertyDeclaration.Identifier.Text)))
+                        {
+                            var propertyNodeFinder = new PropertyNodeFinder(classNodeFinder, propertyDeclaration.Identifier.Text);
+                            nodeFinders.Add(propertyNodeFinder);
+                            memberCount++;
                         }
                     }
                 }
 
-                if (!classDeclaration.Identifier.Text.Equals(ConvertToPythonName(classDeclaration.Identifier.Text)) || methodCount > 0)
+                if (!classDeclaration.Identifier.Text.Equals(ConvertToPythonName(classDeclaration.Identifier.Text))
+                    || memberCount > 0)
                 {
                     nodeFinders.Add(classNodeFinder);
                 }

@@ -42,6 +42,8 @@ namespace Test
     {
         public class MyClass
         {
+            public string Name { get; set; }
+
             public MyClass()
             {            
             }
@@ -71,6 +73,8 @@ namespace Test
             Assert.Equal(2, parameters.Length);
             Assert.Equal("category_name", parameters[0].Name);
             Assert.Equal("item_count", parameters[1].Name);
+
+            Assert.NotNull(myClassType.GetProperty("name"));
         }
     }
 }
