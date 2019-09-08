@@ -46,8 +46,8 @@ namespace Test
             {            
             }
 
-            public void MyTestMethod()
-            {            
+            public void MyTestMethod(string categoryName, int itemCount)
+            {
             }
         }
     }";
@@ -60,8 +60,17 @@ namespace Test
             var ass = await SharpCompiler.CompileProject(solution.Projects.FirstOrDefault());            
 
             var allTypes = ass.GetTypes();
-            
-            Assert.NotNull(ass.GetType("Test.my_class"));
+
+            var myClassType = ass.GetType("Test.my_class");
+            Assert.NotNull(myClassType);
+
+            var testMethod = myClassType.GetMethod("my_test_method");
+            Assert.NotNull(testMethod);
+
+            var parameters = testMethod.GetParameters();
+            Assert.Equal(2, parameters.Length);
+            Assert.Equal("category_name", parameters[0].Name);
+            Assert.Equal("item_count", parameters[1].Name);
         }
     }
 }
