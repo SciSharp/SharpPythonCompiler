@@ -10,11 +10,18 @@ using System.IO;
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 using SharpPythonCompiler.Core;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Build.Locator;
 
 namespace Test
 {
     public class MainTest
     {
+        static MainTest()
+        {
+            MSBuildLocator.RegisterDefaults();
+        }
+
         private static Document GetProjectDocumentForCode(string code)
         {
             var workspace = new AdhocWorkspace();
@@ -33,7 +40,7 @@ namespace Test
 
         
         [Fact]
-        public async Task TransformClassName()
+        public async Task TestTransformCode()
         {
             var code = @"
     using System;
@@ -80,6 +87,25 @@ namespace Test
 
             Assert.NotNull(myClassType.GetField("count"));
             Assert.NotNull(myClassType.GetField("virtual_total"));
+        }
+
+        [Fact]
+        public async Task TestTransformProject()
+        {
+            var workspace = MSBuildWorkspace.Create();
+            var project = await workspace.OpenProjectAsync(Path.Combine(AppContext.BaseDirectory, "../../../../TestAssembly/TestAssembly.csproj"));
+
+            var ass = await SharpCompiler.CompileProject(project);
+
+            Assert.NotNull(ass);
+            Assert.Equal("TestAssembly.Py", ass.GetName().Name);
+
+            var itemRecordType = ass.GetType("TestAssembly.item_record");
+            Assert.NotNull(itemRecordType);
+
+            Assert.NotNull(itemRecordType.GetProperty("name"));
+            Assert.NotNull(itemRecordType.GetProperty("description"));
+            Assert.NotNull(itemRecordType.GetProperty("current_ticks"));            
         }
     }
 }

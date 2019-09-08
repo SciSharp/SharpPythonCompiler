@@ -6,4 +6,8 @@
   <ItemGroup>
     <ProjectReference Include="../SharpPythonCompiler.Core/SharpPythonCompiler.Core.csproj" />
   </ItemGroup>
+   <ItemGroup> 
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="$(MSBuildLocatorVersion)" />
+  </ItemGroup>
 </Project>

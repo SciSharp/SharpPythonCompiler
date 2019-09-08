@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>library</OutputType>
+    <EntryPointType>none</EntryPointType>
   </PropertyGroup>
 
 </Project>

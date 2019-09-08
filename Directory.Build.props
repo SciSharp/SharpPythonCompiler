@@ -3,5 +3,6 @@
         <Version>0.0.1</Version>
         <Authors>Kerry Jiang</Authors>
         <RoslynVersion>3.2.1</RoslynVersion>
+        <MSBuildLocatorVersion>1.2.6</MSBuildLocatorVersion>
     </PropertyGroup>
 </Project>

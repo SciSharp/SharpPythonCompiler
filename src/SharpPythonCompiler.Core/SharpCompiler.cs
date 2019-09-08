@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,26 +9,36 @@ namespace SharpPythonCompiler.Core
 {
     public static class SharpCompiler
     {
-        public static async Task CompileSolution(string solutionFile, string outputDir)
-        {
-            var workspace = new AdhocWorkspace();
-            workspace.AddSolution(SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default, filePath: solutionFile));   
-            var solution = await SharpTransformer.TransformSolution(workspace.CurrentSolution);
+        public static async Task CompileSolution(Solution solution, string outputDir)
+        { 
+            solution = await SharpTransformer.TransformSolution(solution);
 
             foreach (var projectId in solution.ProjectIds)
             {
-                await CompileProject(solution.GetProject(projectId), outputDir);
+                await CompileProjectInternal(solution.GetProject(projectId), outputDir);
             }
         }
 
         public static async Task CompileProject(Project project, string outputDir)
         {
-            var assemblyName = project.AssemblyName;
+            var projectId = project.Id;
+            var solution = await SharpTransformer.TransformProject(project);
+            await CompileProjectInternal(solution.GetProject(projectId), outputDir);
+        }
+
+        private static Project GiveNewAssemblyName(Project project)
+        {
+            return project.WithAssemblyName(project.AssemblyName + ".Py");
+        }
+
+        internal static async Task CompileProjectInternal(Project project, string outputDir)
+        {
+            project = GiveNewAssemblyName(project);
             
             // ensure the directory does exist
             Directory.CreateDirectory(outputDir);
 
-            var assemblyFilePath = Path.Combine(outputDir, assemblyName + ".dll");
+            var assemblyFilePath = Path.Combine(outputDir, project.AssemblyName + ".dll");
 
             // generate the assembly
             using (var stream = File.Create(assemblyFilePath))
@@ -40,12 +51,25 @@ namespace SharpPythonCompiler.Core
 
         public static async Task<Assembly> CompileProject(Project project)
         {
-            var assemblyName = project.AssemblyName;
+            var projectId = project.Id;
+            var solution = await SharpTransformer.TransformProject(project);
+            return await CompileProjectInternal(solution.GetProject(projectId));
+        }
+
+        public static async Task<Assembly> CompileProjectInternal(Project project)
+        {
+            project = GiveNewAssemblyName(project);
 
             // generate the assembly
             using (var stream = new MemoryStream())
             {
-                (await project.GetCompilationAsync()).Emit(stream);
+                var result = (await project.GetCompilationAsync()).Emit(stream);
+
+                if (!result.Success)
+                {
+                    throw new Exception(result.Diagnostics.FirstOrDefault().GetMessage());
+                }
+
                 await stream.FlushAsync();
 
                 stream.Seek(0, SeekOrigin.Begin);
