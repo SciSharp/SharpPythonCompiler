@@ -82,13 +82,14 @@ namespace SharpPythonCompiler.Core
                     }
                     else if (member is FieldDeclarationSyntax fieldDeclaration)
                     {
-                        var variableNode = fieldDeclaration.Declaration.Variables.FirstOrDefault();
-
-                        if (!variableNode.Identifier.Text.Equals(ConvertToPythonName(variableNode.Identifier.Text)))
+                        foreach (var variableNode in fieldDeclaration.Declaration.Variables)
                         {
-                            var fieldNodeFinder = new FieldNodeFinder(classNodeFinder, variableNode.Identifier.Text);
-                            nodeFinders.Add(fieldNodeFinder);
-                            memberCount++;
+                            if (!variableNode.Identifier.Text.Equals(ConvertToPythonName(variableNode.Identifier.Text)))
+                            {
+                                var fieldNodeFinder = new FieldNodeFinder(classNodeFinder, variableNode.Identifier.Text);
+                                nodeFinders.Add(fieldNodeFinder);
+                                memberCount++;
+                            }
                         }
                     }
                 }

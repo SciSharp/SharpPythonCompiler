@@ -44,7 +44,7 @@ namespace Test
         {
             public string Name { get; set; }
 
-            public int Count;
+            public int Count, VirtualTotal;
 
             public MyClass()
             {            
@@ -77,6 +77,9 @@ namespace Test
             Assert.Equal("item_count", parameters[1].Name);
 
             Assert.NotNull(myClassType.GetProperty("name"));
+
+            Assert.NotNull(myClassType.GetField("count"));
+            Assert.NotNull(myClassType.GetField("virtual_total"));
         }
     }
 }

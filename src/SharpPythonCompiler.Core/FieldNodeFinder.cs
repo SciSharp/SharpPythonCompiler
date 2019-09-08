@@ -21,10 +21,18 @@ namespace SharpPythonCompiler.Core
 
         public CSharpSyntaxNode Find(CSharpSyntaxNode root)
         {
-            return (ClassNodeFinder.Find(root) as ClassDeclarationSyntax).Members
-                .OfType<FieldDeclarationSyntax>()
-                .FirstOrDefault(n => n.Declaration.Variables.FirstOrDefault().Identifier.Text == Name)
-                .Declaration.Variables.FirstOrDefault();
+            foreach (var feedDeclaration in (ClassNodeFinder.Find(root) as ClassDeclarationSyntax).Members.OfType<FieldDeclarationSyntax>())
+            {
+                foreach (var variableDeclaration in feedDeclaration.Declaration.Variables)
+                {
+                    if (variableDeclaration.Identifier.Text == Name)
+                    {
+                        return variableDeclaration;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
