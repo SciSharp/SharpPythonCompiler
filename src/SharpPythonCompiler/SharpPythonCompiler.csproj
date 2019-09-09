@@ -2,6 +2,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>sharp-python-compiler</ToolCommandName>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../SharpPythonCompiler.Core/SharpPythonCompiler.Core.csproj" />
