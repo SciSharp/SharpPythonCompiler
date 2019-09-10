@@ -4,6 +4,13 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>sharp-python-compiler</ToolCommandName>
+    <Description>A compiler which can generate a new assembly following the code convention of Python</Description>
+    <Copyright>Apache 2.0</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SciSharp/SharpPythonCompiler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SciSharp/SharpPythonCompiler</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>C#,Python,convention,transform,compiler</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../SharpPythonCompiler.Core/SharpPythonCompiler.Core.csproj" />

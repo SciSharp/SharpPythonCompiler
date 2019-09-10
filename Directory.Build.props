@@ -1,8 +1,10 @@
 <Project>
     <PropertyGroup>
-        <Version>0.0.1</Version>
-        <Authors>Kerry Jiang</Authors>
+        <Version>0.0.1</Version>        
         <RoslynVersion>3.2.1</RoslynVersion>
         <MSBuildLocatorVersion>1.2.6</MSBuildLocatorVersion>
+        <Company>SciSharp</Company>
+        <Product>SharpPythonCompiler</Product>
+        <Authors>Kerry Jiang</Authors>
     </PropertyGroup>
 </Project>
