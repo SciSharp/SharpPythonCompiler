@@ -16,7 +16,10 @@ namespace SharpPythonCompiler
             var outputDir = args[1];
 
             if (!Path.IsPathRooted(slnOrCsprojFile))
-                slnOrCsprojFile = Path.Combine(AppContext.BaseDirectory, slnOrCsprojFile);
+                slnOrCsprojFile = Path.Combine(Environment.CurrentDirectory, slnOrCsprojFile);
+
+            if (!Path.IsPathRooted(outputDir))
+                outputDir = Path.Combine(Environment.CurrentDirectory, outputDir);
 
             MSBuildLocator.RegisterDefaults();
 
