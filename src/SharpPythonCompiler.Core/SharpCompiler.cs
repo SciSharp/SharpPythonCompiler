@@ -43,7 +43,13 @@ namespace SharpPythonCompiler.Core
             // generate the assembly
             using (var stream = File.Create(assemblyFilePath))
             {
-                (await project.GetCompilationAsync()).Emit(stream);
+                var result = (await project.GetCompilationAsync()).Emit(stream);
+
+                if (!result.Success)
+                {
+                    throw new Exception(result.Diagnostics.FirstOrDefault().GetMessage());
+                }
+                
                 await stream.FlushAsync();
                 stream.Close();
             }
