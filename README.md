@@ -8,7 +8,7 @@ A compiler which can transform the convention of C# code to the convention of Py
 
 ## Install it as global tool
 
-    dotnet tool install --global SharpPythonCompiler --version 0.0.1
+    dotnet tool install --global SharpPythonCompiler
 
 ## Compile projects with the command line
 
