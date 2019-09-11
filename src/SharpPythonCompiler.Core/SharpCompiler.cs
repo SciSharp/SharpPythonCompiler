@@ -62,7 +62,7 @@ namespace SharpPythonCompiler.Core
             return await CompileProjectInternal(solution.GetProject(projectId));
         }
 
-        public static async Task<Assembly> CompileProjectInternal(Project project)
+        internal static async Task<Assembly> CompileProjectInternal(Project project)
         {
             project = GiveNewAssemblyName(project);
 

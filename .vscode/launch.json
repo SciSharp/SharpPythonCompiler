@@ -10,9 +10,22 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/test/Test/bin/Debug/netcoreapp3.0/Test.dll",
+            "program": "${workspaceFolder}/test/Test/bin/Debug/netcoreapp2.2/Test.dll",
             "args": [],
             "cwd": "${workspaceFolder}/test/Test",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "SharpPythonCompiler Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/src/SharpPythonCompiler/bin/Debug/netcoreapp2.2/SharpPythonCompiler.dll",
+            "args": ["${workspaceFolder}/test/TestAssembly/TestAssembly.csproj", "${workspaceFolder}/src/SharpPythonCompiler/bin/Debug/netcoreapp2.2"],
+            "cwd": "${workspaceFolder}/src/SharpPythonCompiler",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

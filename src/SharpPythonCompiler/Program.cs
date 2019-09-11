@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -10,8 +11,10 @@ namespace SharpPythonCompiler
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            MSBuildLocator.RegisterDefaults();
+
             var slnOrCsprojFile = args[0];
             var outputDir = args[1];
 
@@ -19,33 +22,18 @@ namespace SharpPythonCompiler
                 slnOrCsprojFile = Path.Combine(Environment.CurrentDirectory, slnOrCsprojFile);
 
             if (!Path.IsPathRooted(outputDir))
-                outputDir = Path.Combine(Environment.CurrentDirectory, outputDir);
+                outputDir = Path.Combine(Environment.CurrentDirectory, outputDir);       
 
-            MSBuildLocator.RegisterDefaults();
-
-            if (slnOrCsprojFile.EndsWith(".sln", StringComparison.OrdinalIgnoreCase))
-            {
-                SharpCompiler.CompileSolution(LoadSolution(slnOrCsprojFile).Result, outputDir).Wait();
-            }
-            else
-            {
-                SharpCompiler.CompileProject(LoadProject(slnOrCsprojFile).Result, outputDir).Wait();
-            }            
-        }
-
-        private static async Task<Solution> LoadSolution(string solutionFile)
-        {
             using (var workspace = MSBuildWorkspace.Create())
             {
-                return await workspace.OpenSolutionAsync(solutionFile);
-            }
-        }
-
-        private static async Task<Project> LoadProject(string projectFile)
-        {
-            using (var workspace = MSBuildWorkspace.Create())
-            {
-                return await workspace.OpenProjectAsync(projectFile);
+                if (slnOrCsprojFile.EndsWith(".sln", StringComparison.OrdinalIgnoreCase))
+                {
+                    await SharpCompiler.CompileSolution(await workspace.OpenSolutionAsync(slnOrCsprojFile), outputDir);
+                }
+                else
+                {
+                    await SharpCompiler.CompileProject(await workspace.OpenProjectAsync(slnOrCsprojFile), outputDir);
+                }
             }
         }
     }
