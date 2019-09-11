@@ -21,8 +21,8 @@ You will get a new assembly file "TestAssembly.Py.dll" in the output directory.
 
 ###### Original Assembly
 
-![Original Assembly](assets/OriginalAssembly.jpg)
+![Original Assembly](assets/OriginalAssembly.JPG)
 
 ###### Compiled Assembly
 
-![Compiled Assembly](assets/CompiledAssembly.jpg)
+![Compiled Assembly](assets/CompiledAssembly.JPG)
