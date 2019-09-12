@@ -43,61 +43,46 @@ namespace SharpPythonCompiler.Core
                 var classNodeFinder = new ClassNodeFinder(classDeclaration.Identifier.Text);
 
                 var publicMembers = classDeclaration.Members.Where(m => m.Modifiers.Any(mm => mm.Text == "public"));
-                
-                var memberCount = 0;
 
                 foreach (var member in publicMembers)
                 {
                     if (member is MethodDeclarationSyntax methodDelcaration)
                     {
-                        var parameterCount = 0;
-
                         var methodNodeFinder = new MethodNodeFinder(classNodeFinder, methodDelcaration.Identifier.Text);
 
                         foreach (var parameter in methodDelcaration?.ParameterList?.Parameters)
                         {
-                            if (!parameter.Identifier.Text.Equals(ConvertToPythonName(parameter.Identifier.Text)))
+                            if (ShouldBeTransformed(parameter.Identifier.Text))
                             {
                                 var parameterNodeFinder = new MethodParameterNodeFinder(methodNodeFinder, parameter.Identifier.Text);
                                 nodeFinders.Add(parameterNodeFinder);
-                                parameterCount++;
-                            }
+                             }
                         }
 
-                        if (!methodDelcaration.Identifier.Text.Equals(ConvertToPythonName(methodDelcaration.Identifier.Text))
-                            || parameterCount > 0)
+                        if (ShouldBeTransformed(methodDelcaration.Identifier.Text))
                         {
                             nodeFinders.Add(methodNodeFinder);
-                            memberCount++;
                         }
                     }
                     else if (member is PropertyDeclarationSyntax propertyDeclaration)
                     {
-                        if (!propertyDeclaration.Identifier.Text.Equals(ConvertToPythonName(propertyDeclaration.Identifier.Text)))
+                        if (ShouldBeTransformed(propertyDeclaration.Identifier.Text))
                         {
                             var propertyNodeFinder = new PropertyNodeFinder(classNodeFinder, propertyDeclaration.Identifier.Text);
                             nodeFinders.Add(propertyNodeFinder);
-                            memberCount++;
                         }
                     }
                     else if (member is FieldDeclarationSyntax fieldDeclaration)
                     {
                         foreach (var variableNode in fieldDeclaration.Declaration.Variables)
                         {
-                            if (!variableNode.Identifier.Text.Equals(ConvertToPythonName(variableNode.Identifier.Text)))
+                            if (ShouldBeTransformed(variableNode.Identifier.Text))
                             {
                                 var fieldNodeFinder = new FieldNodeFinder(classNodeFinder, variableNode.Identifier.Text);
                                 nodeFinders.Add(fieldNodeFinder);
-                                memberCount++;
                             }
                         }
                     }
-                }
-
-                if (!classDeclaration.Identifier.Text.Equals(ConvertToPythonName(classDeclaration.Identifier.Text))
-                    || memberCount > 0)
-                {
-                    nodeFinders.Add(classNodeFinder);
                 }
             }
 
@@ -135,6 +120,11 @@ namespace SharpPythonCompiler.Core
             }
 
             return solution;
+        }
+
+        private static bool ShouldBeTransformed(string text)
+        {
+            return text.Equals(ConvertToPythonName(text));
         }
 
         private static string ConvertToPythonName(string name)
