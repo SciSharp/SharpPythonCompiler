@@ -1,4 +1,6 @@
 # SharpPythonCompiler
+[![NuGet Version](https://img.shields.io/nuget/v/SharpPythonCompiler.svg?style=flat)](https://www.nuget.org/packages/SharpPythonCompiler/)
+
 A compiler which can transform the convention of C# code to the convention of Python.
 
 # Life is short. Do we really need Python?
